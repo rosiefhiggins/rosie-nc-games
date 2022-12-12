@@ -57,7 +57,7 @@ describe('GET /api/categories',()=>{
     })
 })
 
-describe.only('GET /api/reviews', ()=>{
+describe('GET /api/reviews', ()=>{
     test('responds with staus code 200', ()=>{
         return request(app)
         .get('/api/reviews')
@@ -85,6 +85,22 @@ describe.only('GET /api/reviews', ()=>{
                     })
                 )
             })
+        })
+    })
+    test('Reviews are ordered in descending order of dates', ()=>{
+        return request(app)
+        .get('/api/reviews')
+        .expect(200)
+        .then((res)=>{
+            expect(res.body.reviews).toBeSortedBy('created_at', {descending: true, coerce: true})
+        })
+    })
+    test('responds with route not found when api address spelt wrong', ()=>{
+        return request(app)
+        .get('/api/review')
+        .expect(404)
+        .then((res)=>{
+            expect(res.body.msg).toEqual('Route not found')
         })
     })
 })
