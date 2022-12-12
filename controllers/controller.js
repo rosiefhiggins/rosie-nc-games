@@ -5,7 +5,3 @@ exports.getCategories=(req,res)=>{
         res.status(200).send({categories: category})
     })
 }
-
-exports.getReviews=(req,res) => {
-    return res.status(200).send()
-}
