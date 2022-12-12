@@ -24,8 +24,9 @@ describe('GET /api/categories',()=>{
         .get('/api/categories')
         .expect(200)
         .then((res)=>{
-            expect(Array.isArray(res.body)).toBe(true)
-            res.body.forEach((category)=>{
+            expect(typeof res.body).toBe('object')
+            expect(Array.isArray(res.body.categories)).toBe(true)
+            res.body.categories.forEach((category)=>{
                 expect(typeof category).toBe('object')
             })
         })
@@ -35,7 +36,8 @@ describe('GET /api/categories',()=>{
         .get('/api/categories')
         .expect(200)
         .then((res)=>{
-            res.body.forEach((category)=>{
+            expect(res.body.categories).toHaveLength(4)
+            res.body.categories.forEach((category)=>{
                 expect(category).toEqual(
                     expect.objectContaining({
                         slug: expect.any(String),
@@ -51,6 +53,38 @@ describe('GET /api/categories',()=>{
         .expect(404)
         .then((res)=>{
             expect(res.body.msg).toEqual('Route not found')
+        })
+    })
+})
+
+describe('GET /api/reviews', ()=>{
+    test('responds with staus code 200', ()=>{
+        return request(app)
+        .get('/api/reviews')
+        .expect(200)
+    })
+    test('responds with an array of review objects', ()=>{
+        return request(app)
+        .get('/api/reviews')
+        .expect(200)
+        .then((res)=>{
+            expect(Array.isArray(res.body)).toBe(true)
+            res.body.forEach((review)=>{
+                expect(typeof review).toBe('object')
+                expect(review).toEqual(
+                    expect.objectContaining({
+                        owner: expect.any(String),
+                        title: expect.any(String),
+                        review_id: expect.any(Number),
+                        category: expect.any(String),
+                        review_img_url: expect.any(String),
+                        created_at: expect.any(Number),
+                        votes: expect.any(Number),
+                        designer: expect.any(String),
+                        comment_count: expect.any(Number)
+                    })
+                )
+            })
         })
     })
 })
