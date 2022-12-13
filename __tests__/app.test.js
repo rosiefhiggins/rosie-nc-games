@@ -102,19 +102,17 @@ describe('GET /api/reviews/:review_id', ()=>{
         .get('/api/reviews/1')
         .expect(200)
         .then((res)=>{
-            expect(Object.keys(res.body).length).toBe(1)
-            expect(Object.keys(res.body.review).length).toBe(9)
             expect(res.body.review).toEqual(
                 expect.objectContaining({
-                        owner: expect.any(String),
-                        title: expect.any(String),
+                        owner: 'mallionaire',
+                        title: 'Agricola',
                         review_id: 1,
-                        category: expect.any(String),
-                        review_img_url: expect.any(String),
-                        created_at: expect.any(String),
-                        votes: expect.any(Number),
-                        designer: expect.any(String),
-                        review_body: expect.any(String)
+                        category: 'euro game',
+                        review_img_url: 'https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png',
+                        created_at: '2021-01-18T10:00:20.514Z',
+                        votes: 1,
+                        designer: 'Uwe Rosenberg',
+                        review_body: 'Farmyard fun!'
                 })
             )
         })

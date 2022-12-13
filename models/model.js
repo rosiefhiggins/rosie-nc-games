@@ -1,3 +1,4 @@
+const { removeListener } = require('../app')
 const db=require('../db/connection')
 
 exports.selectCategories=()=>{
@@ -14,6 +15,10 @@ exports.selectReviews= () =>{
 
  exports.selectReviewByID=(id)=>{
     return db.query(`SELECT * FROM reviews WHERE review_id=${id};`).then((result)=>{
-        return result.rows[0]
+        if(result.rows.length===0){
+            return Promise.reject({status:404, msg: 'Review ID does not exist'})
+        } else{
+            return result.rows[0]
+        }      
     })
  }
