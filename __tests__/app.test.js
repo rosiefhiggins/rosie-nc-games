@@ -81,7 +81,7 @@ describe('GET /api/reviews', ()=>{
         .get('/api/reviews')
         .expect(200)
         .then((res)=>{
-            expect(res.body.reviews).toBeSortedBy('created_at', {descending: true, coerce: true})
+            expect(res.body.reviews).toBeSortedBy('created_at', {descending: true})
         })
     })
 })
@@ -134,6 +134,66 @@ describe('GET /api/reviews/:review_id', ()=>{
         })
     })
 })
+
+
+describe('GET /api/reviews/:review_id/comments', ()=>{
+    test('responds with status 200 and an array of comments', () =>{
+        return request(app)
+        .get('/api/reviews/2/comments')
+        .expect(200)
+        .then((res)=>{
+            expect(Object.keys(res.body.review_comments).length).toBe(3)
+            res.body.review_comments.forEach((comment)=>{   
+            expect(comment).toEqual(
+                expect.objectContaining({
+                        comment_id: expect.any(Number),
+                        review_id: 2,
+                        created_at: expect.any(String),
+                        votes: expect.any(Number),
+                        author: expect.any(String),
+                        body: expect.any(String)
+                })
+            )
+            })
+        })
+    })
+    test('responds with the comments with most recent first', ()=>{
+        return request(app)
+        .get('/api/reviews/2/comments')
+        .expect(200)
+        .then((res)=>{
+            expect(res.body.review_comments).toBeSortedBy('created_at', {descending: true})
+        })
+    })
+    test('responds with empty array when a valid review id with no comments is entered', ()=>{
+        return request(app)
+        .get('/api/reviews/1/comments')
+        .expect(200)
+        .then((res)=>{
+            expect(res.body.review_comments).toEqual([])
+        })
+    })
+    test('responds with 404 when invalid review id entered', ()=>{
+        return request(app)
+        .get('/api/reviews/20/comments')
+        .expect(404)
+        .then((res)=>{
+            expect(res.body.msg).toBe('Review ID does not exist')
+        })
+    })
+    test('responds with 400 when bad request made', ()=>{
+        return request(app)
+        .get('/api/reviews/badrequest/comments')
+        .expect(400)
+        .then((res)=>{
+            expect(res.body.msg).toBe('Bad request!')
+        })
+    })
+
+})
+
+
+
 
 
 describe('General error handling', ()=>{

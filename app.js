@@ -1,4 +1,4 @@
-const {getCategories, getReviews, getReviewByID}=require('./controllers/controller')
+const {getCategories, getReviews, getReviewByID, getCommentsByReviewID}=require('./controllers/controller')
 const express=require('express')
 const app=express()
 
@@ -7,6 +7,8 @@ app.get('/api/categories', getCategories)
 app.get('/api/reviews', getReviews)
 
 app.get('/api/reviews/:review_id', getReviewByID)
+
+app.get('/api/reviews/:review_id/comments', getCommentsByReviewID)
 
 app.use((err,req,res,next)=>{
   if(err.status && err.msg){

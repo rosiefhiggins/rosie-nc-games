@@ -1,4 +1,3 @@
-const { removeListener } = require('../app')
 const db=require('../db/connection')
 
 exports.selectCategories=()=>{
@@ -20,5 +19,11 @@ exports.selectReviews= () =>{
         } else{
             return result.rows[0]
         }      
+    })
+ }
+
+ exports.selectCommentsByReviewID=(id)=>{
+    return db.query(`SELECT * FROM comments WHERE review_id=${id} ORDER BY created_at desc;`).then((result)=>{
+        return result.rows
     })
  }
