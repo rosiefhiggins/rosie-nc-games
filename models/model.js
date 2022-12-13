@@ -13,7 +13,7 @@ exports.selectReviews= () =>{
  }
 
  exports.selectReviewByID=(id)=>{
-    return db.query(`SELECT * FROM reviews WHERE review_id=${id};`).then((result)=>{
+    return db.query(`SELECT * FROM reviews WHERE review_id=$1;`, [id]).then((result)=>{
         if(result.rows.length===0){
             return Promise.reject({status:404, msg: 'Review ID does not exist'})
         } else{
@@ -23,7 +23,7 @@ exports.selectReviews= () =>{
  }
 
  exports.selectCommentsByReviewID=(id)=>{
-    return db.query(`SELECT * FROM comments WHERE review_id=${id} ORDER BY created_at desc;`).then((result)=>{
+    return db.query(`SELECT * FROM comments WHERE review_id=$1 ORDER BY created_at desc;`, [id]).then((result)=>{
         return result.rows
     })
  }
