@@ -11,3 +11,9 @@ exports.selectReviews= () =>{
             return result.rows
         })
  }
+
+ exports.selectReviewByID=(id)=>{
+    return db.query(`SELECT * FROM reviews WHERE review_id=${id};`).then((result)=>{
+        return result.rows[0]
+    })
+ }
