@@ -87,7 +87,7 @@ describe('GET /api/reviews', ()=>{
 })
 
 
-describe.only('GET /api/reviews/:review_id', ()=>{
+describe('GET /api/reviews/:review_id', ()=>{
     test('responds with status code 200 and a review object', ()=>{
         return request(app)
         .get('/api/reviews/1')
