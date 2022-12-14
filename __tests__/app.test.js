@@ -292,7 +292,19 @@ describe('PATCH /api/reviews/:review_id', ()=>{
         .send(updateVotes)
         .expect(200)
         .then((res)=>{
-            expect(res.body.review.votes).toBe(11)
+            expect(res.body.review).toEqual(
+                expect.objectContaining({
+                        owner: 'mallionaire',
+                        title: 'Agricola',
+                        review_id: 1,
+                        category: 'euro game',
+                        review_img_url: 'https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png',
+                        created_at: '2021-01-18T10:00:20.514Z',
+                        votes: 11,
+                        designer: 'Uwe Rosenberg',
+                        review_body: 'Farmyard fun!'
+                })
+            )
         })
     })
     test('responds status 200, decreasing the votes by value entered', ()=>{
