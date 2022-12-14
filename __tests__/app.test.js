@@ -282,7 +282,92 @@ describe('POST /api/reviews/:review_id/comments', ()=>{
     })
 })
 
-
+describe('PATCH /api/reviews/:review_id', ()=>{
+    test('responds status 200 and the updated review', ()=>{
+        const updateVotes={
+            inc_votes: 10
+        }
+        return request(app)
+        .patch('/api/reviews/1')
+        .send(updateVotes)
+        .expect(200)
+        .then((res)=>{
+            expect(res.body.review.votes).toBe(11)
+        })
+    })
+    test('responds status 200, decreasing the votes by value entered', ()=>{
+        const updateVotes={
+            inc_votes: -10
+        }
+        return request(app)
+        .patch('/api/reviews/1')
+        .send(updateVotes)
+        .expect(200)
+        .then((res)=>{
+            expect(res.body.review.votes).toBe(-9)
+        })
+    })
+    test('responds status 200, ignoring additional keys entered in request body',()=>{
+        const updateVotes={
+            inc_votes: 7,
+            ignore: 'HELLO'
+        }
+        return request(app)
+        .patch('/api/reviews/2')
+        .send(updateVotes)
+        .expect(200)
+        .then((res)=>{
+            expect(res.body.review.votes).toBe(12)
+            expect(res.body.review.ignore).toBe(undefined)
+        })
+    })
+    test('responds 400 bad request when malformed body entered', ()=>{
+        const updateVotes={}
+        return request(app)
+        .patch('/api/reviews/2')
+        .send(updateVotes)
+        .expect(400)
+        .then((res)=>{
+            expect(res.body.msg).toBe('Bad request!')
+        })
+    })
+    test('responds 400 bad request when incorrect data type entered', ()=>{
+        const updateVotes={
+            inc_votes: 'ten'
+        }
+        return request(app)
+        .patch('/api/reviews/2')
+        .send(updateVotes)
+        .expect(400)
+        .then((res)=>{
+            expect(res.body.msg).toBe('Bad request!')
+        })
+    })
+    test('responds with 404 when a valid id is entered but not found', ()=>{
+        const updateVotes={
+            inc_votes: 10
+        }
+        return request(app)
+        .patch('/api/reviews/20')
+        .send(updateVotes)
+        .expect(404)
+        .then((res)=>{
+            expect(res.body.msg).toBe('Review ID does not exist')
+        })
+    })
+    test('responds with 400 when an invalid id is entered', ()=>{
+        const updateVotes={
+            inc_votes: 10
+        }
+        return request(app)
+        .patch('/api/reviews/notanid')
+        .send(updateVotes)
+        .expect(400)
+        .then((res)=>{
+            expect(res.body.msg).toBe('Bad request!')
+        })
+    })
+})
 
 
 describe('General error handling', ()=>{

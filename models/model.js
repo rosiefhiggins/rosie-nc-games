@@ -33,3 +33,13 @@ exports.selectReviews= () =>{
         return rows[0]
     })
  }
+
+ exports.updateVotes=(id, newVote)=>{
+    return db.query("UPDATE reviews SET votes=votes+$1 WHERE review_id=$2 RETURNING *;", [newVote, id]).then((result)=>{
+        if(result.rows.length===0){
+            return Promise.reject({status:404, msg: 'Review ID does not exist'})
+        } else{
+            return result.rows[0]
+    }      
+ })
+}

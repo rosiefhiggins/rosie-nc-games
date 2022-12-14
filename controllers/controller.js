@@ -1,4 +1,4 @@
-const {selectCategories, selectReviews, selectReviewByID, selectCommentsByReviewID, insertComment}=require('../models/model')
+const {selectCategories, selectReviews, selectReviewByID, selectCommentsByReviewID, insertComment, updateVotes}=require('../models/model')
 const {checkIfIDExists}=require('../models/model.reviews')
 
 exports.getCategories=(req,res)=>{
@@ -38,6 +38,15 @@ exports.postComment=(req,res,next)=>{
     const body=req.body.body
     return insertComment(id,username,body).then((newComment)=>{
         res.status(201).send({review_comments: newComment})
+    })
+    .catch((err)=>next(err))
+}
+
+exports.patchVotes=(req,res,next)=>{
+    const id=req.params.review_id
+    const newVote=req.body.inc_votes
+    return updateVotes(id,newVote).then((updatedReview)=>{
+        res.status(200).send({review: updatedReview})
     })
     .catch((err)=>next(err))
 }
