@@ -216,6 +216,21 @@ describe('POST /api/reviews/:review_id/comments', ()=>{
             )
         })
     })
+    test('responds with status 201, ignoring any additional keys in user object', ()=>{
+        const user={
+            username: 'bainesface',
+            body: 'Not quite Yorkshire enough for me',
+            age: 47
+        }
+        return request(app)
+        .post('/api/reviews/10/comments')
+        .send(user)
+        .expect(201)
+        .then((res)=>{
+            expect(Object.keys(res.body.review_comments).length).toBe(6)
+            expect(res.body.review_comments.age).toBe(undefined)
+    })
+})
     test('Responds with status 400 when malformed body entered', ()=>{
         const user={}
         return request(app)
@@ -239,7 +254,7 @@ describe('POST /api/reviews/:review_id/comments', ()=>{
             expect(res.body.msg).toBe('Not found')
         })
     })
-    test('responds with 404 when invalid review id entered', ()=>{
+    test('responds with 404 when a valid id is entered but not found', ()=>{
         const user={
             username: 'bainesface',
             body: 'You just lost the game'
@@ -252,7 +267,22 @@ describe('POST /api/reviews/:review_id/comments', ()=>{
             expect(res.body.msg).toBe('Not found')
         })
     })
+    test('responds with 400 when an invalid id is entered', ()=>{
+        const user={
+            username: 'bainesface',
+            body: 'You just lost the game'
+        }
+        return request(app)
+        .post('/api/reviews/notanid/comments')
+        .send(user)
+        .expect(400)
+        .then((res)=>{
+            expect(res.body.msg).toBe('Bad request!')
+        })
+    })
 })
+
+
 
 
 describe('General error handling', ()=>{
