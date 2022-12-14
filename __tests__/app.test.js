@@ -196,24 +196,60 @@ describe('GET /api/reviews/:review_id/comments', ()=>{
 describe('POST /api/reviews/:review_id/comments', ()=>{
     test('responds with status 201 and the comment belonging to the user', ()=>{
         const user={
-            username: 'treetrunk',
+            username: 'bainesface',
             body: 'Not quite Yorkshire enough for me'
         }
-        request(app)
+        return request(app)
         .post('/api/reviews/10/comments')
         .send(user)
         .expect(201)
         .then((res)=>{
-            expect(res.body.review_comments[0]).toEqual(
+            expect(res.body.review_comments).toEqual(
                 expect.objectContaining({
                     comment_id: 7,
                     body: 'Not quite Yorkshire enough for me',
                     votes: 0,
-                    author: 'treetrunk',
+                    author: 'bainesface',
                     review_id: 10,
                     created_at: expect.any(String),
                 })
             )
+        })
+    })
+    test('Responds with status 400 when malformed body entered', ()=>{
+        const user={}
+        return request(app)
+        .post('/api/reviews/1/comments')
+        .send(user)
+        .expect(400)
+        .then((res)=>{
+            expect(res.body.msg).toBe('Bad request!')
+        })
+    })
+    test('Responds with 404 when invalid username entered', ()=>{
+        const user={
+            username: 'treetrunk',
+            body: 'Not quite Yorkshire enough for me'
+        }
+        return request(app)
+        .post('/api/reviews/10/comments')
+        .send(user)
+        .expect(404)
+        .then((res)=>{
+            expect(res.body.msg).toBe('Not found')
+        })
+    })
+    test('responds with 404 when invalid review id entered', ()=>{
+        const user={
+            username: 'bainesface',
+            body: 'You just lost the game'
+        }
+        return request(app)
+        .post('/api/reviews/20/comments')
+        .send(user)
+        .expect(404)
+        .then((res)=>{
+            expect(res.body.msg).toBe('Not found')
         })
     })
 })

@@ -39,4 +39,5 @@ exports.postComment=(req,res,next)=>{
     return insertComment(id,username,body).then((newComment)=>{
         res.status(201).send({review_comments: newComment})
     })
+    .catch((err)=>next(err))
 }
