@@ -27,3 +27,10 @@ exports.selectReviews= () =>{
         return result.rows
     })
  }
+
+ exports.insertComment=(id, username, body)=>{
+    return db.query("INSERT INTO comments (body, review_id, author) VALUES ($1,$2,$3) RETURNING *;", [body, id, username]).then((result)=>{
+        console.log(result.rows)
+        return result.rows[0]
+    })
+ }

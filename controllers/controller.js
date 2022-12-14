@@ -1,4 +1,4 @@
-const {selectCategories, selectReviews, selectReviewByID, selectCommentsByReviewID}=require('../models/model')
+const {selectCategories, selectReviews, selectReviewByID, selectCommentsByReviewID, insertComment}=require('../models/model')
 const {checkIfIDExists}=require('../models/model.reviews')
 
 exports.getCategories=(req,res)=>{
@@ -30,4 +30,13 @@ exports.getCommentsByReviewID=(req,res,next)=>{
         res.status(200).send({review_comments: comments})
     })
     .catch((err)=>next(err))
+}
+
+exports.postComment=(req,res,next)=>{
+    const id=req.params.review_id
+    const username=req.body.username
+    const body=req.body.body
+    return insertComment(id,username,body).then((newComment)=>{
+        res.status(201).send({review_comments: newComment})
+    })
 }

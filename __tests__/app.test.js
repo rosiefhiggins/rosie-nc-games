@@ -193,11 +193,30 @@ describe('GET /api/reviews/:review_id/comments', ()=>{
 })
 
 
-// describe('POST /api/reviews/:review_id/comments', ()=>{
-//     test('responds with status 201 and the comment belonging to the user', ()=>{
-//         const user
-//     })
-// })
+describe('POST /api/reviews/:review_id/comments', ()=>{
+    test('responds with status 201 and the comment belonging to the user', ()=>{
+        const user={
+            username: 'treetrunk',
+            body: 'Not quite Yorkshire enough for me'
+        }
+        request(app)
+        .post('/api/reviews/10/comments')
+        .send(user)
+        .expect(201)
+        .then((res)=>{
+            expect(res.body.review_comments[0]).toEqual(
+                expect.objectContaining({
+                    comment_id: 7,
+                    body: 'Not quite Yorkshire enough for me',
+                    votes: 0,
+                    author: 'treetrunk',
+                    review_id: 10,
+                    created_at: expect.any(String),
+                })
+            )
+        })
+    })
+})
 
 
 describe('General error handling', ()=>{
