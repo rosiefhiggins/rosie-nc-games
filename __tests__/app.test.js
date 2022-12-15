@@ -470,18 +470,18 @@ describe('GET /api/reviews (queries)', ()=>{
             expect(res.body.msg).toBe('Category not found')
         })
     })
-    test('Responds with status 404 when sort_by column name doesnt exist', ()=>{
+    test('Responds with status 400 when sort_by column name doesnt exist', ()=>{
         return request(app)
         .get("/api/reviews?sort_by=notacolumn")
-        .expect(404)
+        .expect(400)
         .then((res)=>{
-            expect(res.body.msg).toBe('Column not found')
+            expect(res.body.msg).toBe('Invalid column')
         })
     })
-    test('Responds with status 404 when order entered is neither asc nor desc', ()=>{
+    test('Responds with status 400 when order entered is invalid', ()=>{
         return request(app)
         .get("/api/reviews?order=name")
-        .expect(404)
+        .expect(400)
         .then((res)=>{
             expect(res.body.msg).toBe('Invalid order')
         })
