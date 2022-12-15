@@ -1,4 +1,4 @@
-const {selectCategories, selectReviews, selectReviewByID, selectCommentsByReviewID, insertComment, updateVotes}=require('../models/model')
+const {selectCategories, selectReviews, selectReviewByID, selectCommentsByReviewID, insertComment, updateVotes, selectUsers}=require('../models/model')
 const {checkIfIDExists}=require('../models/model.reviews')
 
 exports.getCategories=(req,res)=>{
@@ -49,4 +49,10 @@ exports.patchVotes=(req,res,next)=>{
         res.status(200).send({review: updatedReview})
     })
     .catch((err)=>next(err))
+}
+
+exports.getUsers=(req,res)=>{
+    return selectUsers().then((userArr)=>{
+        res.status(200).send({users: userArr})
+    })
 }
