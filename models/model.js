@@ -6,10 +6,30 @@ exports.selectCategories=()=>{
     })
 }
 
-exports.selectReviews= () =>{
-    return db.query('SELECT reviews.review_id, title, category, designer, owner, review_img_url, reviews.created_at, reviews.votes, COUNT(comments.comment_id) AS comment_count FROM reviews JOIN comments ON comments.review_id=reviews.review_id GROUP BY reviews.review_id ORDER BY reviews.created_at desc;').then((result)=>{
-            return result.rows
-        })
+exports.selectReviews= (category, sort_by='created_at', order='desc') =>{
+    const validColumns=['review_id', 'title', 'category', 'designer', 'owner', 'review_img_url', 'created_at', 'votes', 'comment_count']
+    const validOrders=['asc', 'desc']
+    const queryValues=[]
+    if(validOrders.indexOf(order)===-1){
+        return Promise.reject({status: 400, msg: 'Invalid order'})
+    }
+    if(validColumns.indexOf(sort_by)===-1){
+        return Promise.reject({status: 400, msg: 'Invalid column'})
+    }
+    let queryStr=`SELECT reviews.review_id, title, category, designer, owner, review_img_url, reviews.created_at, reviews.votes, COUNT(comments.comment_id) AS comment_count FROM reviews LEFT JOIN comments ON comments.review_id=reviews.review_id `
+    if(category===undefined){
+        queryStr+=`GROUP BY reviews.review_id ORDER BY ${sort_by} ${order};`
+    } else{
+        const validCategories=['euro game', 'social deduction', "children's games", 'dexterity']
+        if(validCategories.indexOf(category)===-1){
+            return Promise.reject({status: 404, msg: 'Category not found'})
+        }
+        queryStr+=`WHERE category=$1 GROUP BY reviews.review_id ORDER BY ${sort_by} ${order};`
+        queryValues.push(category)
+    }
+    return db.query(queryStr, queryValues).then((result)=>{
+        return result.rows
+    })
  }
 
  exports.selectReviewByID=(id)=>{
