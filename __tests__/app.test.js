@@ -401,6 +401,101 @@ describe('GET /api/users',()=>{
     })
 })
 
+describe('GET /api/reviews (queries)', ()=>{
+    test('Responds with status 200 and returns the category specified', ()=>{
+        return request(app)
+        .get('/api/reviews?category=social deduction')
+        .expect(200)
+        .then((res)=>{
+            expect(res.body.reviews).toHaveLength(11)
+            res.body.reviews.forEach((review)=>{
+                expect(review).toEqual(
+                    expect.objectContaining({
+                        owner: expect.any(String),
+                        title: expect.any(String),
+                        review_id: expect.any(Number),
+                        category: 'social deduction',
+                        review_img_url: expect.any(String),
+                        created_at: expect.any(String),
+                        votes: expect.any(Number),
+                        designer: expect.any(String),
+                        comment_count: expect.any(String)
+                    })
+                )
+            })
+        })
+    })
+    test('Responds with status 200 and returns empty array when no reviews correspond to category', ()=>{
+        return request(app)
+        .get(`/api/reviews?category=children's games`)
+        .expect(200)
+        .then((res)=>{
+            expect(res.body.reviews).toEqual([])
+        })
+    })
+    test('Responds with status 200, returning sorted list', ()=>{
+        return request(app)
+        .get('/api/reviews?sort_by=votes')
+        .expect(200)
+        .then((res)=>{
+            expect(res.body.reviews).toHaveLength(13)
+            expect(res.body.reviews).toBeSortedBy('votes', {descending: true})
+        })
+    })
+    test('Responds with status 200, returning ordered list', ()=>{
+        return request(app)
+        .get('/api/reviews?order=asc')
+        .expect(200)
+        .then((res)=>{
+            expect(res.body.reviews).toBeSortedBy('created_at', {ascending: true})
+        })
+    })
+    test('Responds with status 200 and accepts multiple queries', ()=>{
+        return request(app)
+        .get("/api/reviews?category=social deduction&sort_by=votes&order=asc")
+        .expect(200)
+        .then((res)=>{
+            expect(res.body.reviews).toHaveLength(11)
+            expect(res.body.reviews).toBeSortedBy('votes', {ascending: true})
+            res.body.reviews.forEach((review)=>{
+                expect(review.category).toBe('social deduction')
+            })
+        })
+    })
+    test('Responds with status 404 when category name doesnt exist', ()=>{
+        return request(app)
+        .get("/api/reviews?category=socialdeduction")
+        .expect(404)
+        .then((res)=>{
+            expect(res.body.msg).toBe('Category not found')
+        })
+    })
+    test('Responds with status 404 when sort_by column name doesnt exist', ()=>{
+        return request(app)
+        .get("/api/reviews?sort_by=notacolumn")
+        .expect(404)
+        .then((res)=>{
+            expect(res.body.msg).toBe('Column not found')
+        })
+    })
+    test('Responds with status 404 when order entered is neither asc nor desc', ()=>{
+        return request(app)
+        .get("/api/reviews?order=name")
+        .expect(404)
+        .then((res)=>{
+            expect(res.body.msg).toBe('Invalid order')
+        })
+    })
+    test('Responds with status 400 when query spelt incorrectly', ()=>{
+        return request(app)
+        .get('/api/reviews?category=dexterity&oder=asc')
+        .expect(400)
+        .then((res)=>{
+            expect(res.body.msg).toBe('Invalid query')
+        })
+    })
+})
+
 
 describe('General error handling', ()=>{
     test('responds with route not found when api address spelt wrong', ()=>{

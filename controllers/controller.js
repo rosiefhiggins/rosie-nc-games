@@ -7,10 +7,19 @@ exports.getCategories=(req,res)=>{
     })
 }
 
-exports.getReviews=(req,res)=>{
-    return selectReviews().then((review)=>{
-        res.status(200).send({reviews:review})
-    })
+exports.getReviews=(req,res,next)=>{
+    const queries=req.query
+    const validQueries=['category', 'sort_by', 'order']
+    for(let query in queries){
+        if(validQueries.indexOf(query)===-1){
+            return next({status:400, msg:'Invalid query'})
+        }
+    }
+    const {category, sort_by, order}=queries
+    return selectReviews(category,sort_by,order).then((review)=>{
+            res.status(200).send({reviews:review})
+     })
+    .catch((err)=>next(err))
 }
 
 exports.getReviewByID=(req,res,next)=>{
