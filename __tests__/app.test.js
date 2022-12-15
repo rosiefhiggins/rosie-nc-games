@@ -382,18 +382,6 @@ describe('PATCH /api/reviews/:review_id', ()=>{
 })
 
 describe('GET /api/users',()=>{
-    test('responds with status 200 and an array of objects', ()=>{
-        return request(app)
-        .get('/api/users')
-        .expect(200)
-        .then((res)=>{
-            expect(typeof res.body).toBe('object')
-            expect(Array.isArray(res.body.users)).toBe(true)
-            res.body.users.forEach((user)=>{
-                expect(typeof user).toBe('object')
-            })
-        })
-    })
     test('responds with an array of user objects with correct keys', ()=>{
         return request(app)
         .get('/api/users')
