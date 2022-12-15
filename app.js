@@ -1,4 +1,4 @@
-const {getCategories, getReviews, getReviewByID, getCommentsByReviewID, postComment, patchVotes}=require('./controllers/controller')
+const {getCategories, getReviews, getReviewByID, getCommentsByReviewID, postComment, patchVotes, getUsers}=require('./controllers/controller')
 const express=require('express')
 const app=express()
 
@@ -15,6 +15,8 @@ app.get('/api/reviews/:review_id/comments', getCommentsByReviewID)
 app.post('/api/reviews/:review_id/comments', postComment)
 
 app.patch('/api/reviews/:review_id', patchVotes)
+
+app.get('/api/users', getUsers)
 
 app.use((err,req,res,next)=>{
   if(err.status && err.msg){

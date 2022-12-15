@@ -381,6 +381,38 @@ describe('PATCH /api/reviews/:review_id', ()=>{
     })
 })
 
+describe('GET /api/users',()=>{
+    test('responds with status 200 and an array of objects', ()=>{
+        return request(app)
+        .get('/api/users')
+        .expect(200)
+        .then((res)=>{
+            expect(typeof res.body).toBe('object')
+            expect(Array.isArray(res.body.users)).toBe(true)
+            res.body.users.forEach((user)=>{
+                expect(typeof user).toBe('object')
+            })
+        })
+    })
+    test('responds with an array of user objects with correct keys', ()=>{
+        return request(app)
+        .get('/api/users')
+        .expect(200)
+        .then((res)=>{
+            expect(res.body.users).toHaveLength(4)
+            res.body.users.forEach((user)=>{
+                expect(user).toEqual(
+                    expect.objectContaining({
+                        username: expect.any(String),
+                        name: expect.any(String),
+                        avatar_url: expect.any(String)
+                    })
+                )
+            })
+        })
+    })
+})
+
 
 describe('General error handling', ()=>{
     test('responds with route not found when api address spelt wrong', ()=>{
