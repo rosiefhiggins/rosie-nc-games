@@ -496,6 +496,26 @@ describe('GET /api/reviews (queries)', ()=>{
     })
 })
 
+describe( 'GET /api/reviews/:review_id (comment count)', ()=>{
+    test('returns status 200 and the reviews object with comment count', ()=>{
+        return request(app)
+        .get('/api/reviews/2')
+        .expect(200)
+        .then((res)=>{
+            expect(res.body.review.comment_count).toBe('3')
+        })
+    })
+    test('returns status 200 and reviews object with comment count 0 when no comments associated', ()=>{
+        return request(app)
+        .get('/api/reviews/1')
+        .expect(200)
+        .then((res)=>{
+            expect(res.body.review.comment_count).toBe('0')
+        })
+    })
+})
+
+
 
 describe('General error handling', ()=>{
     test('responds with route not found when api address spelt wrong', ()=>{
