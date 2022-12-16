@@ -1,4 +1,5 @@
-const {getCategories, getReviews, getReviewByID, getCommentsByReviewID, postComment, patchVotes, getUsers}=require('./controllers/controller')
+const {getCategories, getReviews, getReviewByID, getCommentsByReviewID, postComment, patchVotes, getUsers, deleteComment}=require('./controllers/controller')
+const{handleCustomErrors, handlePsqlErrors,handleServerErrors,PathNotFound}=require('./errors/index')
 const express=require('express')
 const app=express()
 
@@ -18,37 +19,14 @@ app.patch('/api/reviews/:review_id', patchVotes)
 
 app.get('/api/users', getUsers)
 
-app.use((err,req,res,next)=>{
-  if(err.status && err.msg){
-      res.status(err.status).send({msg: err.msg});
-  }else{
-      next(err)
-  }
-})
+app.delete('/api/comments/:comment_id', deleteComment)
 
-app.use((err, req, res, next) => {
-  if(err.code==='22P02' || err.code==='23502'){
-    return res.status(400).send({ msg: 'Bad request!' });
-  } else{
-    next(err)
-  }
-})
 
-app.use((err, req, res, next) => {
-  if(err.code==='23502'){
-    return res.status(400).send({ msg: 'Bad request!' });
-  } else{
-    next(err)
-  }
-})
+app.use(handleCustomErrors)
+app.use(handlePsqlErrors)
+app.use(PathNotFound)
+app.use(handleServerErrors)
 
-app.use((err, req, res, next) => {
-  if(err.code==='23503'){
-    return res.status(404).send({ msg: 'Not found' });
-  } else{
-    next(err)
-  }
-})
 
 app.all('/*', (req, res) => {
     res.status(404).send({ msg: 'Route not found' });
