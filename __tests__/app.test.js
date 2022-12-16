@@ -543,7 +543,16 @@ describe('DELETE /api/comments/:comment_id', ()=>{
 
 })
 
-
+describe('GET /api', ()=>{
+    test('returns the correct descriptions', ()=>{
+        return request(app)
+        .get('/api')
+        .expect(200)
+        .then((res)=>{
+            expect(res.body.descriptions["GET /api"].description).toBe("serves up a json representation of all the available endpoints of the api")
+        })
+    })
+})
 
 describe('General error handling', ()=>{
     test('responds with route not found when api address spelt wrong', ()=>{

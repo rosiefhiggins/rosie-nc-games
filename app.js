@@ -1,4 +1,4 @@
-const {getCategories, getReviews, getReviewByID, getCommentsByReviewID, postComment, patchVotes, getUsers, deleteComment}=require('./controllers/controller')
+const {getCategories, getReviews, getReviewByID, getCommentsByReviewID, postComment, patchVotes, getUsers, deleteComment, getDescription}=require('./controllers/controller')
 const{handleCustomErrors, handlePsqlErrors,handleServerErrors,PathNotFound}=require('./errors/index')
 const express=require('express')
 const app=express()
@@ -21,6 +21,7 @@ app.get('/api/users', getUsers)
 
 app.delete('/api/comments/:comment_id', deleteComment)
 
+app.get('/api', getDescription)
 
 app.use(handleCustomErrors)
 app.use(handlePsqlErrors)
