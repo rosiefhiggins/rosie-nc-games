@@ -33,7 +33,7 @@ exports.selectReviews= (category, sort_by='created_at', order='desc') =>{
  }
 
  exports.selectReviewByID=(id)=>{
-    return db.query(`SELECT * FROM reviews WHERE review_id=$1;`, [id]).then((result)=>{
+    return db.query(`SELECT reviews.review_id, title, category, designer, owner, review_img_url, reviews.created_at, reviews.votes, review_body, COUNT(comments.comment_id) AS comment_count FROM reviews LEFT JOIN comments ON comments.review_id=reviews.review_id WHERE reviews.review_id=$1 GROUP BY reviews.review_id;`, [id]).then((result)=>{
         if(result.rows.length===0){
             return Promise.reject({status:404, msg: 'Review ID does not exist'})
         } else{
