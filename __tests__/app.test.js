@@ -515,7 +515,33 @@ describe( 'GET /api/reviews/:review_id (comment count)', ()=>{
     })
 })
 
+describe('DELETE /api/comments/:comment_id', ()=>{
+    test('responds status 204 with an empty response body', ()=>{
+        return request(app)
+        .delete('/api/comments/3')
+        .expect(204)
+        .then((res)=>{
+            expect(res.body).toEqual({})
+        })
+    })
+    test('Recieve status 404 when comment id doesnt exist', ()=>{
+        return request(app)
+        .delete('/api/comments/9')
+        .expect(404)
+        .then((res)=>{
+            expect(res.body.msg).toBe('Comment does not exist')
+        })
+    })
+    test('Recieve status 400 when comment id is invalid', ()=>{
+        return request(app)
+        .delete('/api/comments/notanid')
+        .expect(400)
+        .then((res)=>{
+            expect(res.body.msg).toBe('Bad request!')
+        })
+    })
 
+})
 
 describe('General error handling', ()=>{
     test('responds with route not found when api address spelt wrong', ()=>{
