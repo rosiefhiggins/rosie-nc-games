@@ -544,7 +544,7 @@ describe('DELETE /api/comments/:comment_id', ()=>{
 })
 
 describe('GET /api', ()=>{
-    test('returns the correct descriptions', ()=>{
+    test('accesses the json file and returns the correct descriptions', ()=>{
         return request(app)
         .get('/api')
         .expect(200)
