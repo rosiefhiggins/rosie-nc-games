@@ -1,4 +1,5 @@
 const db=require('../db/connection')
+const fs=require('fs/promises')
 
 exports.selectCategories=()=>{
     return db.query('SELECT * FROM categories;').then((result)=>{
@@ -75,5 +76,12 @@ exports.deleteCommentByID=(id)=>{
         if(result.rowCount===0){
             return Promise.reject({status:404, msg: 'Comment does not exist'})
         }
+    })
+}
+
+exports.selectDescription=()=>{
+    return fs.readFile('endpoints.json').then((description)=>{
+        const parsedDescription=JSON.parse(description)
+        return parsedDescription
     })
 }

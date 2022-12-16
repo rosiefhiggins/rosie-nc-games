@@ -1,5 +1,6 @@
-const {selectCategories, selectReviews, selectReviewByID, selectCommentsByReviewID, insertComment, updateVotes, selectUsers, deleteCommentByID}=require('../models/model')
+const {selectCategories, selectReviews, selectReviewByID, selectCommentsByReviewID, insertComment, updateVotes, selectUsers, deleteCommentByID, selectDescription}=require('../models/model')
 const {checkIfIDExists}=require('../models/model.reviews')
+
 
 exports.getCategories=(req,res)=>{
     return selectCategories().then((category)=>{
@@ -72,4 +73,11 @@ exports.deleteComment=(req,res,next)=>{
         res.status(204).send()
     })
     .catch((err)=>next(err))
+}
+
+
+exports.getDescription=(req,res)=>{
+    return selectDescription().then((description)=>{
+        res.status(200).send({descriptions: description})
+    })
 }
