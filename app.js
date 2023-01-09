@@ -2,8 +2,11 @@ const {getCategories, getReviews, getReviewByID, getCommentsByReviewID, postComm
 const{handleCustomErrors, handlePsqlErrors,handleServerErrors,PathNotFound}=require('./errors/index')
 const express=require('express')
 const app=express()
+const cors=require('cors')
 
 app.use(express.json());
+
+app.use(cors())
 
 app.get('/api/categories', getCategories)
 
