@@ -21,7 +21,7 @@ exports.selectReviews= (category, sort_by='created_at', order='desc') =>{
     if(category===undefined){
         queryStr+=`GROUP BY reviews.review_id ORDER BY ${sort_by} ${order};`
     } else{
-        const validCategories=['euro game', 'social deduction', "children's games", 'dexterity']
+        const validCategories=['euro game', 'social deduction', "children's games", 'dexterity', 'strategy', 'hidden-roles', 'push-your-luck', 'roll-and-write', 'deck-building', 'engine-building']
         if(validCategories.indexOf(category)===-1){
             return Promise.reject({status: 404, msg: 'Category not found'})
         }
